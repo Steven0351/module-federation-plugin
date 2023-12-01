@@ -62,7 +62,7 @@ function findPackageJson(folder: string): string {
 
   throw new Error(
     'no package.json found. Searched the following folder and all parents: ' +
-      folder
+    folder
   );
 }
 
@@ -233,6 +233,12 @@ function readConfiguredSecondaries(
     }
 
     const entry = getDefaultEntry(exports, key);
+
+    if (typeof entry !== 'string') {
+      console.log('No entry point found for ' + secondaryName);
+      continue;
+    }
+
     if (
       entry?.endsWith('.css') ||
       entry?.endsWith('.scss') ||
@@ -259,6 +265,10 @@ function getDefaultEntry(
     entry = exports[key] as unknown as string;
   } else {
     entry = exports[key]?.['default'];
+
+    if (typeof entry === 'object') {
+      entry = entry['default'];
+    }
   }
   return entry;
 }
